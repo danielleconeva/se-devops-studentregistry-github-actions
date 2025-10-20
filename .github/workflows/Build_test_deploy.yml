@@ -1,4 +1,4 @@
-name: Build and test
+name: CI/CD pipeline
 
 on:
   push:
@@ -23,3 +23,19 @@ jobs:
       run: npm install
     - name: Run tests
       run: npm run test
+      
+  deploy: 
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Deploy to Render
+        uses: johnbeynon/render-deploy-action@v0.0.8
+        with:
+          service-id: ${{ secrets.SERVICE_ID }}
+          api-key: ${{ secrets.RENDER_TOKEN }}
+      
+    
+    
+  
